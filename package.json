@@ -9,13 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babel/core": "^8.0.7",
+    "@babel/core": "8.0.9",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.5.0",
     "@mui/material": "^9.5.0",
     "@reduxjs/toolkit": "^2.13.0",
-    "firebase": "^13.0.0",
+    "firebase": "13.1.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.90.0",
