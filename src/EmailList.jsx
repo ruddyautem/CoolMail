@@ -1,6 +1,5 @@
 import "./EmailList.css";
 import { Checkbox, IconButton } from "@mui/material";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -15,23 +14,29 @@ import React from "react";
 import RedoIcon from "@mui/icons-material/Redo";
 import Section from "./Section";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { auth } from "./firebase";
 import { db } from "./firebase";
+import { inboxErrorMessage, subscribeInbox } from './subscribeInbox';
 
 function EmailList() {
-  const q = query(collection(db, "emails"), orderBy("timestamp", "desc"));
+  const [pageSize, setPageSize] = useState(50);
+  const [loadError, setLoadError] = useState('');
+  const [reloadVersion, setReloadVersion] = useState(0);
   const [emails, setEmails] = useState([]);
 
   useEffect(() => {
-    onSnapshot(q, (snapshot) =>
-      setEmails(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-          timestamp: doc.get("timestamp")?.seconds || null, // Ensure timestamp is always defined
-        }))
-      )
-    );
-  }, []);
+    const user = auth.currentUser;
+    if (!user?.uid) return;
+    setLoadError('');
+    return subscribeInbox(db, user, pageSize, messages => {
+      setEmails(messages);
+      setLoadError('');
+    }, error => {
+      // Preserve the diagnostic without logging message contents or credentials.
+      console.error('CoolMail inbox:', error.code || 'unknown');
+      setLoadError(inboxErrorMessage(error));
+    });
+  }, [pageSize, reloadVersion]);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "Date non valide";
@@ -54,32 +59,33 @@ function EmailList() {
   };
 
   return (
-    <div className='emailList'>
+    <div className='emailList' onScroll={(e) => { const el = e.currentTarget; if (el.scrollHeight - el.scrollTop - el.clientHeight < 50 && emails.length === pageSize) setPageSize((size) => size + 50); }}>
+      {loadError && <p role='alert'>{loadError}</p>}
       <div className='emailList__settings'>
         <div className='emailList__settingsLeft'>
           <Checkbox />
-          <IconButton>
-            <ArrowDropDownIcon />
+          <IconButton aria-label="Sélection">
+          <ArrowDropDownIcon />
           </IconButton>
-          <IconButton>
-            <RedoIcon />
+          <IconButton aria-label="Actualiser" onClick={() => setReloadVersion(version => version + 1)}>
+          <RedoIcon />
           </IconButton>
-          <IconButton>
-            <MoreVertIcon />
+          <IconButton aria-label="Plus d’options">
+          <MoreVertIcon />
           </IconButton>
         </div>
         <div className='emailList__settingsRight'>
-          <IconButton>
-            <ChevronLeftIcon />
+          <IconButton aria-label="Page précédente">
+          <ChevronLeftIcon />
           </IconButton>
-          <IconButton>
-            <ChevronRightIcon />
+          <IconButton aria-label="Page suivante">
+          <ChevronRightIcon />
           </IconButton>
-          <IconButton>
-            <KeyboardHideIcon />
+          <IconButton aria-label="Clavier">
+          <KeyboardHideIcon />
           </IconButton>
-          <IconButton>
-            <SettingsIcon />
+          <IconButton aria-label="Paramètres">
+          <SettingsIcon />
           </IconButton>
         </div>
       </div>

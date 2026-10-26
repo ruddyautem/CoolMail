@@ -27,13 +27,13 @@ function EmailRow({ id, title, subject, description, time }) {
   };
 
   return (
-    <div onClick={openMail} className='emailRow'>
-      <div className='emailRow__options'>
+    <div role='link' tabIndex={0} onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openMail(); } }} onClick={openMail} className='emailRow'>
+      <div className='emailRow__options' onClick={(e) => e.stopPropagation()}>
         <Checkbox />
-        <IconButton>
+        <IconButton aria-label="Suivre le message">
           <StarBorderOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton aria-label="Marquer comme important">
           <LabelImportantOutlinedIcon />
         </IconButton>
       </div>

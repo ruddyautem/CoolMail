@@ -2,7 +2,7 @@ import './App.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { login, selectUser } from './features/userSlice';
+import { login, logout, selectUser } from './features/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 import EmailList from './EmailList';
@@ -12,7 +12,7 @@ import Mail from './Mail';
 import React from 'react';
 import SendMail from './SendMail';
 import Sidebar from './Sidebar';
-import { selectSendMessageIsOpen } from './features/mailSlice';
+import { selectSendMessageIsOpen, selectMail, closeSendMessage } from './features/mailSlice';
 import { useEffect } from 'react';
 
 function App() {
@@ -22,23 +22,19 @@ function App() {
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      user ? dispatch(
-        login
-          ({
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL
-          })) : ''
-    })
-  }, [])
+    return onAuthStateChanged(auth, (user) => {
+      dispatch(selectMail(null));
+      dispatch(closeSendMessage());
+      dispatch(user ? login({ uid: user.uid, displayName: user.displayName, email: user.email, photoURL: user.photoURL }) : logout());
+    });
+  }, [auth, dispatch]);
 
   return (
     <BrowserRouter>
       {!user ? (
         <Login />
       ) : (
-        <div className='app'>
+        <div key={user.uid} className='app'>
           <Header />
           <div className='app__body'>
             <Sidebar />

@@ -15,12 +15,13 @@ import React from 'react';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import { selectOpenMail } from './features/mailSlice';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Mail() {
   const navigate = useNavigate();
   const selectedMail = useSelector(selectOpenMail);
+  if (!selectedMail) return <Navigate to='/' replace />;
   return (
     <div className='mail'>
       <div className='mail__tools'>
@@ -32,40 +33,40 @@ function Mail() {
           >
             <ArrowBackIcon />
           </IconButton>
-          <IconButton>
-            <MoveToInboxIcon />
+          <IconButton aria-label="Archiver">
+          <MoveToInboxIcon />
           </IconButton>
-          <IconButton>
-            <DeleteIcon />
+          <IconButton aria-label="Supprimer">
+          <DeleteIcon />
           </IconButton>
-          <IconButton>
-            <ErrorIcon />
+          <IconButton aria-label="Signaler">
+          <ErrorIcon />
           </IconButton>
-          <IconButton>
-            <EmailIcon />
+          <IconButton aria-label="Marquer comme non lu">
+          <EmailIcon />
           </IconButton>
-          <IconButton>
-            <WatchLaterIcon />
+          <IconButton aria-label="Reporter">
+          <WatchLaterIcon />
           </IconButton>
-          <IconButton>
-            <CheckCircleIcon />
+          <IconButton aria-label="Terminer">
+          <CheckCircleIcon />
           </IconButton>
-          <IconButton>
-            <LabelImportantIcon />
+          <IconButton aria-label="Important">
+          <LabelImportantIcon />
           </IconButton>
-          <IconButton>
-            <MoreVertIcon />
+          <IconButton aria-label="Plus d’options">
+          <MoreVertIcon />
           </IconButton>
         </div>
         <div className='mail__toolsRight'>
-          <IconButton>
-            <UnfoldMoreIcon />
+          <IconButton aria-label="Développer">
+          <UnfoldMoreIcon />
           </IconButton>
-          <IconButton>
-            <PrintIcon />
+          <IconButton aria-label="Imprimer">
+          <PrintIcon />
           </IconButton>
-          <IconButton>
-            <ExitToAppIcon />
+          <IconButton aria-label="Plus d’options">
+          <ExitToAppIcon />
           </IconButton>
         </div>
       </div>

@@ -10,7 +10,7 @@ function SidebarOption({ Icon, title, number, selected }) {
   };
 
   return (
-    <div className={`sidebarOption ${selected && 'sidebarOption--active'}`} onClick={handleClick}>
+    <div role='button' tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }} className={`sidebarOption ${selected && 'sidebarOption--active'}`} onClick={handleClick}>
       <Icon />
       <h3>{title}</h3>
       {number && <p>{number}</p>}

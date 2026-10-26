@@ -31,7 +31,7 @@ function Header() {
   return (
     <div className='header'>
       <div className='header__left' onClick={handleClick}>
-        <IconButton>
+        <IconButton aria-label="Accueil">
           <MenuIcon />
         </IconButton>
         <img src='/email.svg' alt='' className='header__logo' />
@@ -39,17 +39,17 @@ function Header() {
       </div>
       <div className='header__middle'>
         <SearchIcon />
-        <input type='text' placeholder='Rechercher dans les messages' />
+        <input aria-label='Rechercher dans les messages' type='text' placeholder='Rechercher dans les messages' />
         <ArrowDropDown className='header__inputCaret' />
       </div>
       <div className='header__right'>
-        <IconButton>
+        <IconButton aria-label="Applications">
           <AppsIcon />
         </IconButton>
-        <IconButton>
+        <IconButton aria-label="Notifications">
           <NotificationsIcon />
         </IconButton>
-        <Avatar onClick={logUserOut} src={user?.photoURL} />
+        <Avatar role='button' tabIndex={0} aria-label='Se déconnecter' onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); logUserOut(); } }} onClick={logUserOut} src={user?.photoURL} />
       </div>
     </div>
   );
